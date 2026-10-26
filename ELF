@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elf Apparel Group | Premium Menswear & Womenswear</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fbf7ee',
+                            100: '#f3e9d2',
+                            500: '#c5a059',
+                            600: '#b08a45',
+                            800: '#5c4820',
+                            900: '#1a1917',
+                            950: '#0d0d0c',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-serif { font-family: 'Playfair Display', serif; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 antialiased flex flex-col min-h-screen">
+
+    <!-- Announcement Bar -->
+    <div class="bg-brand-950 text-brand-100 text-xs py-2 px-4 text-center tracking-widest uppercase flex items-center justify-between z-50">
+        <div class="hidden md:block flex-1 text-left">📍 Opposite The Hilton Garden Marquee, Faisalabad</div>
+        <div class="flex-1 text-center font-medium">✨ Complimentary Worldwide Shipping on Orders Over $150 / 40,000 PKR</div>
+        <div class="hidden md:block flex-1 text-right">
+            <a href="mailto:enlitenfort@gmail.com" class="hover:underline flex items-center justify-end gap-1">
+                <i data-lucide="mail" class="w-3 h-3"></i> enlitenfort@gmail.com
+            </a>
+        </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Mobile Menu Trigger -->
+                <button id="mobileMenuBtn" class="lg:hidden p-2 text-gray-700 hover:text-black focus:outline-none">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+
+                <!-- Logo -->
+                <a href="#" class="flex flex-col items-center group">
+                    <span class="font-serif text-2xl md:text-3xl font-bold tracking-tight text-brand-950 group-hover:text-brand-600 transition">ELF APPAREL</span>
+                    <span class="text-[9px] tracking-[0.3em] font-medium text-brand-600 uppercase">G R O U P</span>
+                </a>
+
+                <!-- Nav Links -->
+                <nav class="hidden lg:flex items-center space-x-8 text-sm font-semibold tracking-wider text-gray-700 uppercase">
+                    <a href="#catalog" class="hover:text-brand-600 transition">Catalog</a>
+                    <a href="#catalog" onclick="setCategory('menswear')" class="hover:text-brand-600 transition">Menswear</a>
+                    <a href="#catalog" onclick="setCategory('womenswear')" class="hover:text-brand-600 transition">Womenswear</a>
+                    <a href="#catalog" onclick="setCategory('accessories')" class="hover:text-brand-600 transition">Accessories</a>
+                    <a href="#location" class="hover:text-brand-600 transition">Visit Store</a>
+                </nav>
+
+                <!-- Actions -->
+                <div class="flex items-center space-x-4 sm:space-x-6">
+                    <!-- Currency Switcher -->
+                    <div class="relative">
+                        <select id="currencySelector" class="bg-gray-100 text-xs font-bold rounded-full py-1.5 px-3 border-none focus:ring-2 focus:ring-brand-500 cursor-pointer">
+                            <option value="USD">USD ($)</option>
+                            <option value="PKR">PKR (Rs.)</option>
+                        </select>
+                    </div>
+
+                    <!-- Search Button -->
+                    <button id="searchOpenBtn" class="p-2 text-gray-700 hover:text-brand-600 transition">
+                        <i data-lucide="search" class="w-5 h-5"></i>
+                    </button>
+
+                    <!-- Cart Trigger -->
+                    <button id="cartDrawerBtn" class="relative p-2 text-gray-700 hover:text-brand-600 transition">
+                        <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                        <span id="cartCountBadge" class="absolute -top-1 -right-1 bg-brand-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Search Overlay -->
+    <div id="searchOverlay" class="fixed inset-0 bg-black/50 z-50 backdrop-blur-sm hidden flex items-start justify-center pt-24 px-4 transition-opacity">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-2xl shadow-2xl relative">
+            <button id="searchCloseBtn" class="absolute top-4 right-4 text-gray-400 hover:text-black">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+            <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-4">Search Products</h3>
+            <div class="relative">
+                <input type="text" id="searchInput" placeholder="Search by name, category, style..." class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-12 pr-4 text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                <i data-lucide="search" class="w-5 h-5 text-gray-400 absolute left-4 top-3.5"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="relative bg-brand-950 text-white overflow-hidden py-24 md:py-36">
+        <div class="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1950&q=80')] bg-cover bg-center"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-brand-950 via-brand-950/80 to-transparent"></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-start">
+            <span class="inline-block bg-brand-600/30 text-brand-100 text-xs font-semibold uppercase tracking-widest px-4 py-1.5 rounded-full border border-brand-500/40 mb-6">New Season Collection 2026</span>
+            <h1 class="font-serif text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-tight max-w-3xl mb-6">
+                Redefining Modern Elegance & Luxury.
+            </h1>
+            <p class="text-gray-300 text-lg md:text-xl max-w-xl mb-8 font-light leading-relaxed">
+                Discover bespoke outerwear, tailored essentials, and haute couture crafted for the sophisticated wardrobe.
+            </p>
+            <div class="flex flex-wrap gap-4">
+                <a href="#catalog" class="bg-brand-500 hover:bg-brand-600 text-brand-950 font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-brand-500/20 transition transform hover:-translate-y-0.5">
+                    Explore Collection
+                </a>
+                <a href="#location" class="border border-white/30 hover:bg-white/10 text-white font-semibold px-8 py-4 rounded-xl backdrop-blur-md transition">
+                    Visit Flagship Store
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Catalog Section -->
+    <main id="catalog" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex-1 w-full">
+        <!-- Catalog Header & Controls -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 pb-6 border-b border-gray-200 gap-6">
+            <div>
+                <h2 class="font-serif text-3xl font-bold text-gray-900">Curated Collections</h2>
+                <p class="text-gray-500 mt-1 text-sm">Handcrafted apparel built with premium craftsmanship.</p>
+            </div>
+            
+            <!-- Filters -->
+            <div class="flex flex-wrap items-center gap-3">
+                <button onclick="setCategory('all')" class="cat-filter active bg-brand-950 text-white text-xs font-semibold uppercase px-4 py-2 rounded-full transition" data-cat="all">All</button>
+                <button onclick="setCategory('menswear')" class="cat-filter bg-white text-gray-600 hover:bg-gray-100 border text-xs font-semibold uppercase px-4 py-2 rounded-full transition" data-cat="menswear">Menswear</button>
+                <button onclick="setCategory('womenswear')" class="cat-filter bg-white text-gray-600 hover:bg-gray-100 border text-xs font-semibold uppercase px-4 py-2 rounded-full transition" data-cat="womenswear">Womenswear</button>
+                <button onclick="setCategory('accessories')" class="cat-filter bg-white text-gray-600 hover:bg-gray-100 border text-xs font-semibold uppercase px-4 py-2 rounded-full transition" data-cat="accessories">Accessories</button>
+            </div>
+        </div>
+
+        <!-- Product Grid -->
+        <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <!-- Dynamic JavaScript Rendering Here -->
+        </div>
+    </main>
+
+    <!-- Physical Location & Contact Section -->
+    <section id="location" class="bg-white border-t border-gray-200 py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <span class="text-brand-600 font-bold uppercase text-xs tracking-widest">Flagship Boutique</span>
+                    <h2 class="font-serif text-3xl sm:text-4xl font-bold text-gray-900 mt-2 mb-6">Visit Elf Apparel Group</h2>
+                    <p class="text-gray-600 leading-relaxed mb-8">
+                        Experience our private fittings and view our complete haute couture lines in person. Visit our showroom for custom tailoring services and personal styling consultations.
+                    </p>
+                    
+                    <div class="space-y-4 mb-8">
+                        <div class="flex items-start gap-4">
+                            <div class="p-3 bg-brand-50 text-brand-600 rounded-xl">
+                                <i data-lucide="map-pin" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-900">Address</h4>
+                                <p class="text-gray-600 text-sm">Opposite The Hilton Garden Marquee, Sheikhupura - Faisalabad Road, Faisalabad, Punjab, Pakistan</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="p-3 bg-brand-50 text-brand-600 rounded-xl">
+                                <i data-lucide="mail" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-900">Official Direct Contact</h4>
+                                <a href="mailto:enlitenfort@gmail.com" class="text-brand-600 hover:underline font-medium text-sm">enlitenfort@gmail.com</a>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="p-3 bg-brand-50 text-brand-600 rounded-xl">
+                                <i data-lucide="clock" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-900">Store Operating Hours</h4>
+                                <p class="text-gray-600 text-sm">Monday – Saturday: 11:00 AM – 10:00 PM</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="mailto:enlitenfort@gmail.com?subject=Private Booking Inquiry - Elf Apparel Group" class="inline-flex items-center gap-2 bg-brand-950 text-white font-bold px-6 py-3.5 rounded-xl hover:bg-brand-600 transition">
+                        <i data-lucide="calendar" class="w-4 h-4"></i> Schedule Appointment
+                    </a>
+                </div>
+
+                <!-- Google Maps Embed Card -->
+                <div class="bg-gray-100 rounded-3xl p-4 border border-gray-200 shadow-inner h-[400px] relative overflow-hidden flex flex-col justify-between" style="background: url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=800&q=80') center/cover;">
+                    <div class="absolute inset-0 bg-brand-950/70 backdrop-blur-xs"></div>
+                    <div class="relative z-10 p-6 text-white">
+                        <span class="bg-white/20 text-xs px-3 py-1 rounded-full uppercase tracking-wider font-semibold">Store Coordinates</span>
+                        <h3 class="font-serif text-2xl font-bold mt-4">Faisalabad Headquarters</h3>
+                        <p class="text-gray-300 text-sm mt-1">Sheikhupura Rd, Opposite Hilton Garden Marquee</p>
+                    </div>
+                    <div class="relative z-10 p-6 bg-white/90 backdrop-blur-md rounded-2xl border border-white/20">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-xs font-bold uppercase text-gray-400">Customer Support Email</p>
+                                <p class="font-mono font-bold text-gray-900">enlitenfort@gmail.com</p>
+                            </div>
+                            <button onclick="copyToClipboard('enlitenfort@gmail.com')" class="bg-brand-600 text-white p-2.5 rounded-lg hover:bg-brand-500 transition">
+                                <i data-lucide="copy" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-brand-950 text-white border-t border-brand-900 pt-16 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-10">
+            <div>
+                <a href="#" class="inline-block mb-4">
+                    <span class="font-serif text-2xl font-bold tracking-tight">ELF APPAREL</span>
+                    <span class="block text-[9px] tracking-[0.3em] text-brand-500 font-semibold uppercase">G R O U P</span>
+                </a>
+                <p class="text-gray-400 text-sm leading-relaxed">Luxury bespoke fashion brand committed to timeless quality and sustainable craftsmanship.</p>
+            </div>
+            <div>
+                <h4 class="font-bold uppercase tracking-wider text-xs mb-4 text-brand-500">Quick Links</h4>
+                <ul class="space-y-2 text-sm text-gray-400">
+                    <li><a href="#catalog" class="hover:text-white transition">New Arrivals</a></li>
+                    <li><a href="#catalog" class="hover:text-white transition">Menswear</a></li>
+                    <li><a href="#catalog" class="hover:text-white transition">Womenswear</a></li>
+                    <li><a href="#location" class="hover:text-white transition">Store Locator</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold uppercase tracking-wider text-xs mb-4 text-brand-500">Legal & Support</h4>
+                <ul class="space-y-2 text-sm text-gray-400">
+                    <li><a href="#" class="hover:text-white transition">Shipping & Returns</a></li>
+                    <li><a href="#" class="hover:text-white transition">Size Guide</a></li>
+                    <li><a href="#" class="hover:text-white transition">Terms of Service</a></li>
+                    <li><a href="#" class="hover:text-white transition">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold uppercase tracking-wider text-xs mb-4 text-brand-500">Contact Us</h4>
+                <p class="text-sm text-gray-400 mb-2">📍 Opposite The Hilton Garden Marquee, Faisalabad</p>
+                <p class="text-sm text-gray-400">✉️ <a href="mailto:enlitenfort@gmail.com" class="hover:underline">enlitenfort@gmail.com</a></p>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-8 border-t border-gray-800 text-center text-xs text-gray-500">
+            &copy; 2026 Elf Apparel Group. All Rights Reserved. Fully Functional E-Commerce Web Engine.
+        </div>
+    </footer>
+
+    <!-- Cart Drawer -->
+    <div id="cartDrawer" class="fixed inset-0 z-50 pointer-events-none overflow-hidden">
+        <div id="cartBackdrop" class="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-300"></div>
+        <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+            <div id="cartPanel" class="w-screen max-w-md bg-white shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 pointer-events-auto">
+                <div class="p-6 border-b border-gray-200 flex items-center justify-between">
+                    <h3 class="font-serif text-xl font-bold">Your Cart</h3>
+                    <button id="cartCloseBtn" class="text-gray-400 hover:text-black">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
+
+                <div id="cartItemsContainer" class="flex-1 overflow-y-auto p-6 space-y-4">
+                    <!-- Dynamic Cart Items -->
+                </div>
+
+                <div class="p-6 border-t border-gray-200 bg-gray-50">
+                    <div class="mb-4">
+                        <div class="flex gap-2">
+                            <input type="text" id="promoInput" placeholder="Promo code (Try ELF10)" class="flex-1 bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs uppercase focus:outline-none focus:ring-2 focus:ring-brand-500">
+                            <button onclick="applyPromo()" class="bg-gray-900 text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-black transition">Apply</button>
+                        </div>
+                        <div id="promoMessage" class="text-xs mt-1 font-semibold hidden"></div>
+                    </div>
+                    <div class="space-y-2 text-sm text-gray-600">
+                        <div class="flex justify-between">
+                            <span>Subtotal</span>
+                            <span id="cartSubtotal" class="font-bold text-gray-900">$0.00</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Discount</span>
+                            <span id="cartDiscount" class="text-green-600 font-semibold">-$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-base font-bold text-gray-900 pt-2 border-t">
+                            <span>Total</span>
+                            <span id="cartTotal">$0.00</span>
+                        </div>
+                    </div>
+                    <button id="checkoutBtn" class="w-full mt-6 bg-brand-600 hover:bg-brand-500 text-white font-bold py-3.5 rounded-xl shadow-md transition">
+                        Proceed to Checkout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkoutModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <button id="checkoutCloseBtn" class="absolute top-6 right-6 text-gray-400 hover:text-black">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+            <h3 class="font-serif text-2xl font-bold mb-2">Complete Order</h3>
+            <p class="text-xs text-gray-500 mb-6">Elf Apparel Group • Official Checkout</p>
+            
+            <form id="checkoutForm" onsubmit="handlePlaceOrder(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Full Name</label>
+                    <input type="text" required class="w-full border rounded-xl p-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none" placeholder="John Doe">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Email Address</label>
+                    <input type="email" required class="w-full border rounded-xl p-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none" placeholder="john@example.com">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Shipping Address</label>
+                    <textarea required class="w-full border rounded-xl p-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none" rows="2" placeholder="Street, City, Postal Code"></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Payment Method</label>
+                    <select class="w-full border rounded-xl p-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                        <option>Cash on Delivery (COD)</option>
+                        <option>Credit / Debit Card</option>
+                        <option>Bank Transfer</option>
+                    </select>
+                </div>
+                <div class="pt-4 border-t">
+                    <button type="submit" class="w-full bg-brand-950 text-white font-bold py-4 rounded-xl hover:bg-brand-600 transition">Place Order Now</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Receipt Modal -->
+    <div id="receiptModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl text-center">
+            <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="check-circle-2" class="w-10 h-10"></i>
+            </div>
+            <h3 class="font-serif text-2xl font-bold text-gray-900">Order Confirmed!</h3>
+            <p class="text-xs text-gray-500 mt-1">Thank you for shopping with Elf Apparel Group.</p>
+            <div id="receiptDetails" class="bg-gray-50 rounded-2xl p-4 my-6 text-left text-xs space-y-2">
+                <!-- Receipt Details Rendered Here -->
+            </div>
+            <button onclick="closeReceiptModal()" class="w-full bg-brand-950 text-white font-bold py-3 rounded-xl hover:bg-brand-600 transition">Continue Shopping</button>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Catalog Products Data
+        const products = [
+            { id: 1, title: 'Royal Wool Trench Coat', category: 'menswear', priceUSD: 180, image: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=600&q=80' },
+            { id: 2, title: 'Silk Evening Blazer', category: 'womenswear', priceUSD: 210, image: 'https://images.unsplash.com/photo-1584273143981-41c073dfe8f8?auto=format&fit=crop&w=600&q=80' },
+            { id: 3, title: 'Bespoke Leather Chrono Strap', category: 'accessories', priceUSD: 65, image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80' },
+            { id: 4, title: 'Cashmere Executive Sweater', category: 'menswear', priceUSD: 140, image: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&w=600&q=80' },
+            { id: 5, title: 'Tailored Linen Trousers', category: 'womenswear', priceUSD: 110, image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=600&q=80' },
+            { id: 6, title: 'Signature Gold Monogram Belt', category: 'accessories', priceUSD: 85, image: 'https://images.unsplash.com/photo-1624222247344-550fb60583dc?auto=format&fit=crop&w=600&q=80' }
+        ];
+
+        let cart = JSON.parse(localStorage.getItem('elf_cart')) || [];
+        let currentCurrency = 'USD';
+        let conversionRatePKR = 278; // 1 USD = 278 PKR
+        let activeDiscount = 0;
+
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Render Catalog
+        function renderProducts(cat = 'all', query = '') {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+            
+            const filtered = products.filter(p => {
+                const matchesCat = (cat === 'all' || p.category === cat);
+                const matchesSearch = p.title.toLowerCase().includes(query.toLowerCase());
+                return matchesCat && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-gray-400">No products found.</div>`;
+                return;
+            }
+
+            filtered.forEach(p => {
+                const priceFormatted = formatPrice(p.priceUSD);
+                grid.innerHTML += `
+                    <div class="group bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
+                        <div class="relative overflow-hidden aspect-[3/4]">
+                            <img src="${p.image}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="${p.title}">
+                            <button onclick="addToCart(${p.id})" class="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-md text-brand-950 font-bold py-3 rounded-xl shadow-lg hover:bg-brand-950 hover:text-white transition flex items-center justify-center gap-2">
+                                <i data-lucide="plus" class="w-4 h-4"></i> Add to Cart
+                            </button>
+                        </div>
+                        <div class="p-5 flex-1 flex flex-col justify-between">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold text-brand-600 tracking-wider">${p.category}</span>
+                                <h3 class="font-serif font-bold text-gray-900 text-lg mt-1">${p.title}</h3>
+                            </div>
+                            <div class="mt-4 font-bold text-gray-900 text-lg">
+                                ${priceFormatted}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        // Format Currency
+        function formatPrice(usdVal) {
+            if (currentCurrency === 'PKR') {
+                return `Rs. ${(usdVal * conversionRatePKR).toLocaleString()}`;
+            }
+            return `$${usdVal.toFixed(2)}`;
+        }
+
+        // Category Filter Setup
+        function setCategory(cat) {
+            document.querySelectorAll('.cat-filter').forEach(btn => {
+                if (btn.dataset.cat === cat) {
+                    btn.className = 'cat-filter bg-brand-950 text-white text-xs font-semibold uppercase px-4 py-2 rounded-full transition';
+                } else {
+                    btn.className = 'cat-filter bg-white text-gray-600 hover:bg-gray-100 border text-xs font-semibold uppercase px-4 py-2 rounded-full transition';
+                }
+            });
+            renderProducts(cat);
+        }
+
+        // Cart Drawer Operations
+        function toggleCart(open) {
+            const drawer = document.getElementById('cartDrawer');
+            const panel = document.getElementById('cartPanel');
+            const backdrop = document.getElementById('cartBackdrop');
+
+            if (open) {
+                drawer.classList.remove('pointer-events-none');
+                backdrop.classList.remove('opacity-0');
+                panel.classList.remove('translate-x-full');
+            } else {
+                panel.classList.add('translate-x-full');
+                backdrop.classList.add('opacity-0');
+                setTimeout(() => drawer.classList.add('pointer-events-none'), 300);
+            }
+        }
+
+        function addToCart(id) {
+            const existing = cart.find(item => item.id === id);
+            if (existing) {
+                existing.qty++;
+            } else {
+                const prod = products.find(p => p.id === id);
+                cart.push({ ...prod, qty: 1 });
+            }
+            updateCartUI();
+            toggleCart(true);
+        }
+
+        function updateQty(id, delta) {
+            const idx = cart.findIndex(i => i.id === id);
+            if (idx > -1) {
+                cart[idx].qty += delta;
+                if (cart[idx].qty <= 0) cart.splice(idx, 1);
+            }
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            localStorage.setItem('elf_cart', JSON.stringify(cart));
+            const container = document.getElementById('cartItemsContainer');
+            const badge = document.getElementById('cartCountBadge');
+            
+            const totalCount = cart.reduce((acc, item) => acc + item.qty, 0);
+            badge.innerText = totalCount;
+
+            container.innerHTML = '';
+
+            if (cart.length === 0) {
+                container.innerHTML = `<p class="text-center text-gray-400 py-12">Your cart is empty.</p>`;
+            } else {
+                cart.forEach(item => {
+                    container.innerHTML += `
+                        <div class="flex items-center gap-4 bg-gray-50 p-3 rounded-xl border border-gray-100">
+                            <img src="${item.image}" class="w-16 h-16 object-cover rounded-lg" alt="${item.title}">
+                            <div class="flex-1">
+                                <h4 class="font-bold text-sm text-gray-900">${item.title}</h4>
+                                <p class="text-xs text-gray-500">${formatPrice(item.priceUSD)}</p>
+                                <div class="flex items-center gap-2 mt-2">
+                                    <button onclick="updateQty(${item.id}, -1)" class="w-6 h-6 bg-white border rounded flex items-center justify-center font-bold text-xs">-</button>
+                                    <span class="text-xs font-bold">${item.qty}</span>
+                                    <button onclick="updateQty(${item.id}, 1)" class="w-6 h-6 bg-white border rounded flex items-center justify-center font-bold text-xs">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            // Totals
+            const subtotalUSD = cart.reduce((acc, item) => acc + (item.priceUSD * item.qty), 0);
+            const discountUSD = subtotalUSD * activeDiscount;
+            const totalUSD = subtotalUSD - discountUSD;
+
+            document.getElementById('cartSubtotal').innerText = formatPrice(subtotalUSD);
+            document.getElementById('cartDiscount').innerText = `-${formatPrice(discountUSD)}`;
+            document.getElementById('cartTotal').innerText = formatPrice(totalUSD);
+        }
+
+        function applyPromo() {
+            const code = document.getElementById('promoInput').value.trim().toUpperCase();
+            const msg = document.getElementById('promoMessage');
+            if (code === 'ELF10') {
+                activeDiscount = 0.10;
+                msg.innerText = "10% Discount Applied!";
+                msg.className = "text-xs mt-1 font-semibold text-green-600";
+            } else {
+                msg.innerText = "Invalid Promo Code";
+                msg.className = "text-xs mt-1 font-semibold text-red-500";
+            }
+            msg.classList.remove('hidden');
+            updateCartUI();
+        }
+
+        // Checkout & Receipts
+        function handlePlaceOrder(e) {
+            e.preventDefault();
+            const orderNum = 'ELF-' + Math.floor(100000 + Math.random() * 900000);
+            
+            document.getElementById('checkoutModal').classList.add('hidden');
+            
+            const receiptDetails = document.getElementById('receiptDetails');
+            receiptDetails.innerHTML = `
+                <p><strong>Order ID:</strong> ${orderNum}</p>
+                <p><strong>Store Address:</strong> Opposite The Hilton Garden Marquee, Faisalabad</p>
+                <p><strong>Contact Email:</strong> enlitenfort@gmail.com</p>
+                <p><strong>Items:</strong> ${cart.length} product(s)</p>
+                <p><strong>Total Amount:</strong> ${document.getElementById('cartTotal').innerText}</p>
+            `;
+            
+            document.getElementById('receiptModal').classList.remove('hidden');
+            cart = [];
+            activeDiscount = 0;
+            updateCartUI();
+            toggleCart(false);
+        }
+
+        function closeReceiptModal() {
+            document.getElementById('receiptModal').classList.add('hidden');
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text);
+            alert('Email address copied to clipboard: ' + text);
+        }
+
+        // Event Listeners
+        document.getElementById('cartDrawerBtn').addEventListener('click', () => toggleCart(true));
+        document.getElementById('cartCloseBtn').addEventListener('click', () => toggleCart(false));
+        document.getElementById('cartBackdrop').addEventListener('click', () => toggleCart(false));
+        
+        document.getElementById('currencySelector').addEventListener('change', (e) => {
+            currentCurrency = e.target.value;
+            renderProducts();
+            updateCartUI();
+        });
+
+        document.getElementById('searchOpenBtn').addEventListener('click', () => {
+            document.getElementById('searchOverlay').classList.remove('hidden');
+        });
+        document.getElementById('searchCloseBtn').addEventListener('click', () => {
+            document.getElementById('searchOverlay').classList.add('hidden');
+        });
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            renderProducts('all', e.target.value);
+        });
+
+        document.getElementById('checkoutBtn').addEventListener('click', () => {
+            if (cart.length === 0) return alert('Your cart is empty.');
+            document.getElementById('checkoutModal').classList.remove('hidden');
+        });
+        document.getElementById('checkoutCloseBtn').addEventListener('click', () => {
+            document.getElementById('checkoutModal').classList.add('hidden');
+        });
+
+        // Initialize Page
+        renderProducts();
+        updateCartUI();
+    </script>
+</body>
+</html>
